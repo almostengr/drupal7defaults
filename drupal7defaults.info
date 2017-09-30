@@ -1,0 +1,7 @@
+name = Drupal 7 Defaults
+description = Sets default variables based on environment for Drupal 7
+package = Almost Engineered
+core = 7.x
+version = 7.x-1.0 
+
+files[] = drupal7defaults.module
