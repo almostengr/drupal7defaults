@@ -1,0 +1,44 @@
+<?php 
+
+function drupal7defaults_admin() {
+  $form = array();
+  
+  $form['drupal7defaults_environment'] = array(
+    '#title' => t('Environment'),
+    '#default_value' => variable_get('drupal7defaults_environment', 'PROD'),
+    '#required' => TRUE,
+    '#type' => 'select',
+    '#options' => array(
+      'devl' => 'Development',
+      'prod' => 'Production',
+    );
+  
+  return system_settings_form($form);
+}
+
+function drupal7defaults_cron() {
+  $environment = variable_get('drupal7defaults_environment', 'PROD');
+  
+  if ($environment == "DEVL") {
+    // do devl
+  else{
+    variable_set('anonymous', 'Anonymous');
+    variable_set('cron_safe_threshold', '21600');
+    variable_set('empty_timezone_message', 1);
+    variable_set('file_temporary_path', '/tmp');
+    variable_set('maintenance_mode', 0);
+    variable_set('maintenance_mode_message', 'Our website is currently unavailable due to scheduled maintennace. We will be back online once maintenace has been completed.');
+    variable_set('search_default_module', 'node');
+    variable_set('site_default_country', 'US');
+    variable_set('site_mail', 'noreply@' . $_SERVER[SERVER_NAME]);
+    variable_set('update_check_disable', 0);
+    variable_set('update_check_frequency', '7');
+    variable_set('update_notification_threshold', 'security');
+    variable_set('update_notify_emails', 'bitsecondal@gmail.com');
+    variable_set('user_cancel_method', 'user_cancel_block');
+    variable_set('user_email_verification', 1);
+    variable_set('user_failed_login_ip_limit', "5");
+    variable_set('user_failed_login_ip_window', '3600');
+    variable_set('user_register', '1');
+  } // end else
+}
