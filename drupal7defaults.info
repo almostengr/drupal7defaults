@@ -5,3 +5,5 @@ core = 7.x
 version = 7.x-1.1
 
 files[] = drupal7defaults.module
+
+configure = admin/config/system/drupal7defaults
