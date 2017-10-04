@@ -1,6 +1,28 @@
 <?php 
 
-function drupal7defaults_admin() {
+/**
+ *
+ * implements hook_menu()
+ */
+function drupal7defaults_menu() {
+  $items = array();
+
+  $items['admin/config/system/drupal7defaults'] = array(
+	'title' => 'Drupal Defaults',
+  	'description' => t('Set the recommended default values based on environment.'),
+  	'page callback' => 'drupal_get_form',
+  	'page arguments' => array('drupal7defaults_admin_form'),
+  	'access arguments' => array('access adminstration pages'),
+  	'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * 
+ * implements hook_form()
+ */
+function drupal7defaults_admin_form() {
   $form = array();
   
   $form['drupal7defaults_environment'] = array(
@@ -11,16 +33,45 @@ function drupal7defaults_admin() {
     '#options' => array(
       'devl' => 'Development',
       'prod' => 'Production',
-    );
+    ),
+  );
   
   return system_settings_form($form);
 }
 
+/** 
+ * 
+ * implements hook_cron()
+ */
 function drupal7defaults_cron() {
   $environment = variable_get('drupal7defaults_environment', 'PROD');
   
   if ($environment == "DEVL") {
-    // do devl
+  	variable_set('anonymous', 'Anonymous');
+  	variable_set('cron_safe_threshold', '21600');
+  	variable_set('empty_timezone_message', 1);
+  	variable_set('file_temporary_path', '/tmp');
+  	variable_set('maintenance_mode', 0);
+  	variable_set('maintenance_mode_message', 'Our website is currently unavailable due to scheduled maintennace. We will be back online once maintenace has been completed.');
+  	variable_set('search_default_module', 'node');
+  	variable_set('site_default_country', 'US');
+  	
+  	// site name
+  	$sitename = variable_get('site_name');
+  	$sitename = 'DEV ' . $sitename . ' DEV';
+  	variable_set('site_name', $sitename);
+  	
+  	variable_set('site_mail', 'noreply@' . $_SERVER[SERVER_NAME]);
+  	variable_set('update_check_disable', 0);
+  	variable_set('update_check_frequency', '7');
+  	variable_set('update_notification_threshold', 'security');
+  	variable_set('update_notify_emails', 'bitsecondal@gmail.com');
+  	variable_set('user_cancel_method', 'user_cancel_block');
+  	variable_set('user_email_verification', 1);
+  	variable_set('user_failed_login_ip_limit', "5");
+  	variable_set('user_failed_login_ip_window', '3600');
+  	variable_set('user_register', '1');
+  }
   else{
     variable_set('anonymous', 'Anonymous');
     variable_set('cron_safe_threshold', '21600');
@@ -30,6 +81,13 @@ function drupal7defaults_cron() {
     variable_set('maintenance_mode_message', 'Our website is currently unavailable due to scheduled maintennace. We will be back online once maintenace has been completed.');
     variable_set('search_default_module', 'node');
     variable_set('site_default_country', 'US');
+    
+    // site name
+    $sitename = variable_get('site_name');
+    $sitename = str_replace($sitename, 'DEV ', '');
+    $sitename = str_replace($sitename, ' DEV', '');
+    variable_set('site_name', $sitename);
+    
     variable_set('site_mail', 'noreply@' . $_SERVER[SERVER_NAME]);
     variable_set('update_check_disable', 0);
     variable_set('update_check_frequency', '7');
